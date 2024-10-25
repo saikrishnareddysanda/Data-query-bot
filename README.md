@@ -42,13 +42,14 @@ After running the run.sh script, run the evaluation scripts `evaluation_spider_e
 
 ### Spider (EX)
 
-Difficulty Level       Count     Execution Accuracy (%)
---------------------   -------   -----------------------
-Easy                   248       62.1
-Medium                 446       51.6
-Hard                   174       37.4
-Extra                  166       22.3
-All                    1034      47.0
+| Difficulty Level | Count | Execution Accuracy (%) |
+|------------------|-------|------------------------|
+| Easy             | 248   | 62.1                   |
+| Medium           | 446   | 51.6                   |
+| Hard             | 174   | 37.4                   |
+| Extra            | 166   | 22.3                   |
+| **All**          | 1034  | 47.0                   |
+
 
 
 
