@@ -1,22 +1,8 @@
-## 📖Introduction
+## Introduction
 
-This is the official repository for the paper ["MAC-SQL: A Multi-Agent Collaborative Framework for Text-to-SQL"](https://arxiv.org/abs/2312.11242).
+The goal of the project is to enhance the performance of text-to-SQL conversion using an agentic approach. Each agent in the system will handle a specialized task in the SQL generation process. The project aims to evaluate the performance of the existing [MAC-SQL](https://arxiv.org/pdf/2312.11242) approach, implemented on an open-source model (Llama2), and to achieve better results. This will be accomplished through prompt engineering, the addition of specialized agents, or fine-tuning the model to create more effective agents tailored for specific tasks in the text-to-SQL pipeline.
 
-In this paper, we propose a multi-agent collaborative Text-to-SQL framework MAC-SQL, which comprises three agents: the **Selector**, the **Decomposer**, and the **Refiner**.
-
-<img src="./assets/framework.jpg" align="middle" width="95%">
-
-
-# 🔥 Updates
-- [**2024-04-23**] We have updated the `sql-llama-instruct-v0.5.jsonl` and training scripts in `training_scripts` dir of this project. Please check it out.
-- [**2024-04-22**] We have updated the [SQL-Llama-v0.5](https://huggingface.co/IceKingBing) model and data.zip (update dev_gold_schema.json in bird and spider) The download links of the updated data are available on [Baidu Disk](https://pan.baidu.com/s/1jU2li3d-enhzswx8VdNYdg?pwd=hfmk) and [Google Drive](https://drive.google.com/file/d/1kkkNJSmJkZKeZyDFUDG7c4mnkxsrr-om/view?usp=sharing).
-- [**2024-02-18**] We have updated the paper, with updates mainly focusing on experiments and framework details, check it out! [link](https://arxiv.org/abs/2312.11242).
-- [**2023-12-26**] We have updated the paper, with updates mainly focusing on the title, abstract, introduction, some details, and appendix. In addition, we give some bad case examples on `bad_cases` folder, check it out!
-- [**2023-12-19**] We released our first version [paper](https://arxiv.org/abs/2312.11242), [code](https://github.com/wbbeyourself/MAC-SQL). Check it out!
-
-
-
-## ⚡Environment
+## Environment
 
 1. Config your local environment.
 
@@ -27,118 +13,53 @@ pip install -r requirements.txt
 python -c "import nltk; nltk.download('punkt')"
 ```
 
-Note: we use `openai==0.28.1`, which use `openai.ChatCompletion.create` to call api.
-
-2. Edit openai config at **core/api_config.py**, and set related environment variables of Azure OpenAI API.
-
-Currently, we use `gpt-4-1106-preview` (128k version) by default, which is 2.5 times less expensive than the `gpt-4 (8k)` on average.
+2. Install ollama, download llama3.1 8B model and start the server.
 
 ```bash
-export OPENAI_API_BASE="YOUR_OPENAI_API_BASE"
-export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.1
+./ollama serve 
 ```
 
-## 🔧 Data Preparation
+This will help us to give the model an input thriugh rest API.
 
-In order to prepare the data more quickly, I have packaged the files including the databases of the BIRD dataset and the Spider dataset into `data.zip` and uploaded them. 
-All files were downloaded on December 19, 2023, ensuring they are the latest version at that moment. 
-The download links are available on [Baidu Disk](https://pan.baidu.com/s/1jU2li3d-enhzswx8VdNYdg?pwd=hfmk) and [Google Drive](https://drive.google.com/file/d/1kkkNJSmJkZKeZyDFUDG7c4mnkxsrr-om/view?usp=sharing)(update on 2024-04-22).
+## Data Sets
 
+Download the bird and spider datasets from [Google Drive](https://drive.google.com/file/d/1kkkNJSmJkZKeZyDFUDG7c4mnkxsrr-om/view?usp=sharing).
 After downloading the `data.zip` file, you should delete the existing data folder in the project directory and replace it with the unzipped data folder from `data.zip`.
 
 
-## 🚀 Run
+## Run
 
-The run script will first run 5 examples in Spider to check environment.
-You should open code comments for different usage.
+The run script (run.sh) contains the commands to run the pipeline on spider and bird datasets. All the logs and predictions are stored in output folder.
 
-- `run.sh` for Linux/Mac OS
-- `run.bat` for Windows OS
+## Evaluation
 
-For SQL execution demo, you can use `app_bird.py` or `app_spider.py` to get the execution result of your SQL query.
-
-```bash
-cd ./scripts
-python app_bird.py
-python app_spider.py
-```
-
-If occur error `/bin/bash^M: bad interpreter` in Linux, use `sed -i -e 's/\r$//' run.sh` to solve it.
-
-## 📝Evaluation Dataset
-
-We evaluate our method on both BIRD dataset and Spider dataset.
-
-EX: Execution Accuracy(%)
-
-VES: Valid Efficiency Score(%)
-
-Refer to our paper for the details.
+After running the run.sh script, run the evaluation scripts `evaluation_spider_ex.sh` for spider and `evaluation_bird_ex_ves.sh` for bird dataset.
 
 
-## 🫡Run SQL-Llama
+## Results
 
-Download the [SQL-Llama](https://huggingface.co/IceKingBing)(current v0.5 version) and follow the [SQL-Llama-deployment.md](SQL-Llama-deployment.md) to deploy.
+### Spider (EX)
 
-Uncomment the `MODEL_NAME = 'CodeLlama-7b-hf'` in `core/api_config.py` to set the global model and comment other `MODEL_NAME = xxx` lines.
-
-Uncomment the `export OPENAI_API_BASE='http://0.0.0.0:8000/v1'` in `run.sh` to set the local model api base.
-
-Then, run `run.sh` to start your local inference.
-
-
-## 🌟 Project Structure
-
-```txt
-├─data # store datasets and databases
-|  ├─spider
-|  ├─bird
-├─core
-|  ├─agents.py       # define three agents class
-|  ├─api_config.py   # OpenAI API ENV config
-|  ├─chat_manager.py # manage the communication between agents
-|  ├─const.py        # prompt templates and CONST values
-|  ├─llm.py          # api call function and log print
-|  ├─utils.py        # utils function
-├─scripts            # sqlite execution flask demo
-|  ├─app_bird.py
-|  ├─app_spider.py
-|  ├─templates
-├─evaluation # evaluation scripts
-|  ├─evaluation_bird_ex.py
-|  ├─evaluation_bird_ves.py
-|  ├─evaluation_spider.py
-├─bad_cases
-|  ├─badcase_BIRD(dev)_examples.xlsx
-|  └badcase_Spider(dev)_examples.xlsx
-├─evaluation_bird_ex_ves.sh # bird evaluation script
-├─README.md
-├─requirements.txt
-├─run.py # main run script
-├─run.sh # generation and evaluation script
-```
+Difficulty Level       Count     Execution Accuracy (%)
+--------------------   -------   -----------------------
+Easy                   248       62.1
+Medium                 446       51.6
+Hard                   174       37.4
+Extra                  166       22.3
+All                    1034      47.0
 
 
-## 💬Citation
+
+### Bird (EX)
+
+| Difficulty Level | Count | Execution Accuracy (%) |
+|------------------|-------|------------------------|
+| Simple           | 925   | 22.92                  |
+| Moderate         | 465   | 11.61                  |
+| Challenging      | 144   | 5.56                   |
+| **Total**        | 1534  | 17.86                  |
 
 
-If you find our work is helpful, please cite as:
 
-```text
-@misc{wang2024macsql,
-      title={MAC-SQL: A Multi-Agent Collaborative Framework for Text-to-SQL}, 
-      author={Bing Wang and Changyu Ren and Jian Yang and Xinnian Liang and Jiaqi Bai and Linzheng Chai and Zhao Yan and Qian-Wen Zhang and Di Yin and Xing Sun and Zhoujun Li},
-      year={2024},
-      eprint={2312.11242},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
-}
-```
-
-## 👍Contributing
-
-
-We welcome contributions and suggestions!
-
-
-# Test commit

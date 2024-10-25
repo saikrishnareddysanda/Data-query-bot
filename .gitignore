@@ -7,7 +7,6 @@ tmp/
 .vscode/
 core/magic.api.py
 core/magic.config.json
-outputs/
 sql-llama-train/
 test.py
 api.py

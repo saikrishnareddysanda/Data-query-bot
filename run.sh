@@ -7,26 +7,26 @@
 
 # Generate SQL on foo dataset for env test
 # This will get ./outputs/foo/output_bird.json and ./outputs/foo/predict_test.json
-python ./run.py --dataset_name "bird" \
-   --dataset_mode="test" \
-   --input_file "./data/foo/test.json" \
-   --db_path "./data/foo/test_databases" \
-   --tables_json_path "./data/foo/test_tables.json" \
-   --output_file "./outputs/foo/output_bird.json" \
-   --log_file "./outputs/foo/log.txt"
+# python ./run.py --dataset_name "bird" \
+#    --dataset_mode="test" \
+#    --input_file "./data/foo/test.json" \
+#    --db_path "./data/foo/test_databases" \
+#    --tables_json_path "./data/foo/test_tables.json" \
+#    --output_file "./outputs/foo/output_bird.json" \
+#    --log_file "./outputs/foo/log.txt"
 
-echo "Generate SQL on env test data done!"
+# echo "Generate SQL on env test data done!"
 
 
 # #################### BIRD dev 【run】count=1534 #########
 # Generate SQL on BIRD dev dataset
-# python ./run.py --dataset_name="bird" \
-#    --dataset_mode="dev" \
-#    --input_file="./data/bird/dev.json" \
-#    --db_path="./data/bird/dev_databases/" \
-#    --tables_json_path "./data/bird/dev_tables.json" \
-#    --output_file="./outputs/bird/output_bird.json" \
-#    --log_file="./outputs/bird/log.txt"
+python ./run.py --dataset_name="bird" \
+   --dataset_mode="dev" \
+   --input_file="./data/bird/dev.json" \
+   --db_path="./data/bird/dev_databases/" \
+   --tables_json_path "./data/bird/dev_tables.json" \
+   --output_file="./outputs/bird/output_bird.json" \
+   --log_file="./outputs/bird/log.txt"
 
 
 # use gold schema
@@ -53,12 +53,5 @@ echo "Generate SQL on env test data done!"
 #    --output_file "./outputs/spider/output_spider.json" \
 #    --log_file "./outputs/spider/log.txt"
 
-# #################### Spider dev 【evaluation】EX and EM count=1034 #########
-# python ./evaluation/evaluation_spider.py \
-#    --gold "./data/spider/dev_gold.sql" \
-#    --db "./data/spider/database" \
-#    --table "./data/spider/tables.json" \
-#    --pred "./outputs/spider/pred_dev.sql" \
-#    --etype "exec"
 
 echo "Done!"

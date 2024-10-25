@@ -1,0 +1,22 @@
+[
+  [
+    "What is the highest eligible free rate for K-12 students in the schools in Alameda County?",
+    "SELECT s.`School Name`, (f.`FREEmatch` / fe.`Total Enrollment`) AS EligbleFreeRate FROM schools s JOIN frpm f ON s.CDSCode = f.`CDSCode` JOIN tempEnrollment te ON s.CDSCode = te.`CDSCode` --assuming you need another table for Total Enrollment, adjust accordingly GROUP BY s.`School Name`, f.`FREEmatch`, fe.`Total Enrollment` ORDER BY EligbleFreeRate DESC LIMIT 1;\t----- bird -----\tcalifornia_schools"
+  ],
+  [
+    "Please list the lowest three eligible free rates for students aged 5-17 in continuation schools.",
+    "error: No SQL found in the input string\t----- bird -----\tcalifornia_schools"
+  ],
+  [
+    "Please list the zip code of all the charter schools in Fresno County Office of Education.",
+    "SELECT COUNT(DISTINCT CDSCode) AS charter_schools_in_fresnoCountyOfficeOfEducation, zips FROM ( SELECT fprm.CDSCode, s.zips FROM frpm JOIN coe ON fprm.DOC = COE.DOC_CODE -- assume 'coe' is in lowercase and fixed the alias issue by adding table name between `COE` and `.` JOIN schools s1 ON fprm.CDSCode = s1.CDSCode # assuming there's a table 'school1' WHERE coe.office_name LIKE '%Fresno%' ) AS temp_table;\t----- bird -----\tcalifornia_schools"
+  ],
+  [
+    "What is the unabbreviated mailing address of the school with the highest FRPM count for K-12 students?",
+    "SELECT CDSCode, UnabbreviatedMailingAddress, NCESFRPMCount from ( SELECT s.CDSCode, s.UnabbreviatedMailingAddress, NCESFRPMCount, ROW_NUMBER() OVER (PARTITION BY s.CDSCode ORDER BY NCESFRPMCount DESC) As rn FROM schools s INNER JOIN frpm ON s.CDSCode = frpm.`CDSCode` INNER JOIN satscores ON s.CDSCode = satscores.cds) WHERE rn = 1;\t----- bird -----\tcalifornia_schools"
+  ],
+  [
+    "Please list the phone numbers of the direct charter-funded schools that are opened after 2000/1/1.",
+    "SELECT DISTINCT frpm.Phone FROM frpm INNER JOIN schools ON `CDSCode` = schools.`CDSCode` WHERE CampusTypeCode IN (3,4) AND FundingType IN ('Directly funded', 'Locally funded') AND Phone IS NOT NULL AND CDSCode IS NOT NULL AND AdmFName1 IS NOT NULL;\t----- bird -----\tcalifornia_schools"
+  ]
+]
