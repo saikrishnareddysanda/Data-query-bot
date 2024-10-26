@@ -37,6 +37,10 @@ The run script (run.sh) contains the commands to run the pipeline on spider and 
 
 After running the run.sh script, run the evaluation scripts `evaluation_spider_ex.sh` for spider and `evaluation_bird_ex_ves.sh` for bird dataset.
 
+## Demo
+
+Run `streamlit run demo.py`
+
 
 ## Results
 

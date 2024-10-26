@@ -547,7 +547,7 @@ class Selector(BaseAgent):
         word_info = extract_world_info(self._message)
         reply = LLM_API_FUC(prompt, **word_info)
         extracted_schema_dict = parse_json(reply)
-        return extracted_schema_dict
+        return extracted_schema_dict, prompt, reply
 
     def talk(self, message: dict):
         """
@@ -573,7 +573,7 @@ class Selector(BaseAgent):
         if ext_sch == {} and need_prune:
             
             try:
-                raw_extracted_schema_dict = self._prune(db_id=db_id, query=query, db_schema=db_schema, db_fk=db_fk, evidence=evidence)
+                raw_extracted_schema_dict, prompt, reply = self._prune(db_id=db_id, query=query, db_schema=db_schema, db_fk=db_fk, evidence=evidence)
             except Exception as e:
                 print(e)
                 raw_extracted_schema_dict = {}
@@ -587,6 +587,11 @@ class Selector(BaseAgent):
             message['fk_str'] = db_fk
             message['pruned'] = True
             message['send_to'] = DECOMPOSER_NAME
+            message['selector'] = {
+                'prompt': prompt,
+                'reply' : reply,
+                'parsed_response': raw_extracted_schema_dict
+            }
         else:
             message['chosen_db_schem_dict'] = chosen_db_schem_dict
             message['desc_str'] = db_schema
@@ -656,6 +661,11 @@ class Decomposer(BaseAgent):
         message['qa_pairs'] = qa_pairs
         message['fixed'] = False
         message['send_to'] = REFINER_NAME
+        message['decomposer'] = {
+                'prompt': prompt,
+                'reply' : reply,
+                'parsed_response': res
+            }
 
 
 class Refiner(BaseAgent):
@@ -735,7 +745,7 @@ class Refiner(BaseAgent):
         word_info = extract_world_info(self._message)
         reply = LLM_API_FUC(prompt, **word_info)
         res = parse_sql_from_string(reply)
-        return res
+        return res, prompt, reply
 
     def talk(self, message: dict):
         """
@@ -777,8 +787,21 @@ class Refiner(BaseAgent):
             message['try_times'] = message.get('try_times', 0) + 1
             message['pred'] = old_sql
             message['send_to'] = SYSTEM_NAME
+
         else:
-            new_sql = self._refine(query, evidence, schema_info, fk_info, error_info)
+            new_sql, prompt, reply = self._refine(query, evidence, schema_info, fk_info, error_info)
+            if 'refiner' not in message:
+                message['refiner'] = {
+                'prompt': [prompt],
+                'reply' : [reply],
+                'parsed_response': [new_sql]
+            }
+            else:
+                message['refiner']['prompt'].append(prompt)
+                message['refiner']['reply'].append(reply)
+                message['refiner']['parsed_response'].append(new_sql)
+
+
             message['try_times'] = message.get('try_times', 0) + 1
             message['pred'] = new_sql
             message['fixed'] = True
