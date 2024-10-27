@@ -657,16 +657,60 @@ class Decomposer(BaseAgent):
         # reply = LLM_API_FUC(prompt)
         # qa_pairs = []
         
-        message['final_sql'] = res
+        message['decomposer_sql'] = res
         message['qa_pairs'] = qa_pairs
         message['fixed'] = False
-        message['send_to'] = REFINER_NAME
+        message['send_to'] = REVIEWER_NAME
         message['decomposer'] = {
                 'prompt': prompt,
                 'reply' : reply,
                 'parsed_response': res
             }
 
+class Reviewer(BaseAgent):
+    """
+    Review the SQl query and correct it.
+    """
+
+    name = REVIEWER_NAME
+    description = "Review the SQl query and correct it."
+
+    def __init__(self):
+        super().__init__()
+        self._message = {}
+
+    def talk(self, message: dict):
+        if message['send_to'] != self.name: return
+        self._message = message
+        query, evidence, old_sql, schema_info, fk_info = message.get('query'), \
+                            message.get('evidence'), \
+                            message.get('decomposer_sql'), \
+                            message.get('desc_str'), \
+                            message.get('fk_str')
+
+        prompt = reviewer_template.format(query=query, desc_str=schema_info, fk_str=fk_info, pred_sql=old_sql)
+        word_info = extract_world_info(self._message)
+        reply = LLM_API_FUC(prompt, **word_info).strip()
+        print("!!!!!!!!!!!!Reviewer response", reply)
+    
+        res = ''
+        qa_pairs = reply
+        
+        try:
+            res = parse_sql_from_string(reply)
+            print("\n\nFinal SQL Query from decomposer", res)
+        except Exception as e:
+            res = f'error: {str(e)}'    
+        time.sleep(1)
+
+        message['final_sql'] = res
+        message['fixed'] = False
+        message['send_to'] = REFINER_NAME
+        message['reviewer'] = {
+                'prompt': prompt,
+                'reply' : reply,
+                'parsed_response': res
+            }
 
 class Refiner(BaseAgent):
     name = REFINER_NAME

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from core.agents import Selector, Decomposer, Refiner
+from core.agents import Selector, Decomposer, Refiner, Reviewer
 from core.const import MAX_ROUND, SYSTEM_NAME, SELECTOR_NAME, DECOMPOSER_NAME, REFINER_NAME
 
 INIT_LOG__PATH_FUNC = None
@@ -30,6 +30,7 @@ class ChatManager(object):
         self.chat_group = [
             Selector(data_path=self.data_path, tables_json_path=self.tables_json_path, model_name=self.model_name, dataset_name=dataset_name, lazy=lazy, without_selector=without_selector),
             Decomposer(dataset_name=dataset_name),
+            Reviewer(),
             Refiner(data_path=self.data_path, dataset_name=dataset_name)
         ]
         INIT_LOG__PATH_FUNC(log_path)

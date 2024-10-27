@@ -8,6 +8,7 @@ ENGINE_GPT4_32K = 'gpt-4-32k'
 
 SELECTOR_NAME = 'Selector'
 DECOMPOSER_NAME = 'Decomposer'
+REVIEWER_NAME = 'Reviewer'
 REFINER_NAME = 'Refiner'
 SYSTEM_NAME = 'System'
 
@@ -341,6 +342,37 @@ Question Solved.
 SQL
 
 """
+
+
+reviewer_template = """
+Given the following database schema, foreign keys, and question, review the submitted SQL query for correctness, efficiency. Provide the final query with ```sql [corrected_sql_query]```.
+Make sure the generated final sql query is syntactically correct and relevant to the query asked. You are free to modify the tables and columns as required.
+Only generate the final SQL query.
+
+Example final answer
+SQL
+```sql
+SELECT `Song_Name`, `Song_release_year` FROM singer WHERE Age = (SELECT MIN(Age) FROM singer)
+```
+
+=========
+
+【Database schema】
+{desc_str}
+【Foreign keys】
+{fk_str}
+【Question】
+{query}
+ [Submitted SQL Query]
+```sql
+{pred_sql}
+```
+
+Now please write the corrected query.
+[Correct SQL Query]
+
+"""
+
 
 
 oneshot_template_1 = """

@@ -64,6 +64,7 @@ if st.button("Submit"):
     output = {
         "selector": user_message.get('selector', ''),
         "decomposer": user_message.get('decomposer', ''),
+        "reviewer": user_message.get('reviewer', ''),
         "refiner": user_message.get('refiner', '')
     }
     
