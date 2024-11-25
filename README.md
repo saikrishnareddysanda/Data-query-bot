@@ -4,7 +4,7 @@ The goal of the project is to enhance the performance of text-to-SQL conversion 
 
 ## Overall Flow
 
-<img src="./flow.jpg" align="middle" width="95%">
+<img src="./flow.png" align="middle" width="95%">
 
 
 ## Environment
