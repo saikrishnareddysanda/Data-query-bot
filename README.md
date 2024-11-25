@@ -2,6 +2,13 @@
 
 The goal of the project is to enhance the performance of text-to-SQL conversion using an agentic approach. Each agent in the system will handle a specialized task in the SQL generation process. The project aims to evaluate the performance of the existing [MAC-SQL](https://arxiv.org/pdf/2312.11242) approach, implemented on an open-source model (Llama2), and to achieve better results. This will be accomplished through prompt engineering, the addition of specialized agents, or fine-tuning the model to create more effective agents tailored for specific tasks in the text-to-SQL pipeline.
 
+## Overall Flow
+
+```markdown
+![Workflow Diagram](flow.jpg)
+```
+
+
 ## Environment
 
 1. Config your local environment.
@@ -46,14 +53,23 @@ Run `streamlit run demo.py`
 
 ### Spider (EX)
 
-| Difficulty Level | Count | Execution Accuracy (%) |
-|------------------|-------|------------------------|
-| Easy             | 248   | 62.1                   |
-| Medium           | 446   | 51.6                   |
-| Hard             | 174   | 37.4                   |
-| Extra            | 166   | 22.3                   |
-| **All**          | 1034  | 47.0                   |
+Here’s the table updated with the additional column for **Execution Accuracy (%) (With Review Agent Modified Prompt)**:
 
+---
+
+## Results
+
+### Spider (EX)
+
+| Difficulty Level | Count | Execution Accuracy (%) (Without Review Agent) | Execution Accuracy (%) (With Review Agent) | Execution Accuracy (%) (With Review Agent Modified Prompt) |
+|------------------|-------|-----------------------------------------------|--------------------------------------------|-----------------------------------------------------------|
+| Easy             | 248   | 61.1                                          | 61.3                                       | 65.3                                                      |
+| Medium           | 446   | 51.6                                          | 54.3                                       | 53.6                                                      |
+| Hard             | 174   | 37.4                                          | 37.4                                       | 39.1                                                      |
+| Extra            | 166   | 22.3                                          | 26.5                                       | 23.5                                                      |
+| **All**          | 1034  | 47.0                                          | 48.6                                       | 49.1                                                      |
+
+---
 
 
 
