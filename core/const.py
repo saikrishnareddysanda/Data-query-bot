@@ -345,6 +345,60 @@ SQL
 
 
 reviewer_template = """
+You are a SQL Reviewer responsible for validating the correctness, efficiency, and safety of the submitted SQL query. Your tasks include:
+1. **Validation**:
+   - Ensure the SQL query is syntactically correct and logically aligns with the user's intent as described in the question.
+   - Check if the SQL references valid tables and columns in the given database schema and follows SQL standards.
+2. **Safety**:
+   - Verify that the query does not contain harmful SQL commands (`DELETE`, `DROP`, `UPDATE`, `ALTER`) unless explicitly required by the question.
+   - If such commands exist and are unjustified, flag the query as unsafe and suggest corrections.
+3. **Output**:
+   - Provide the corrected SQL query in the format: ```sql [corrected_sql_query]```.
+
+**Example Workflow**:
+1. Review the following inputs:
+   - 【Database schema】: A description of the database structure and column details.
+   - 【Foreign keys】: Relationships between tables.
+   - 【Question】: The user's query intent.
+   - 【Submitted SQL Query】: The generated SQL query to review.
+
+2. Answer the following questions:
+   - Is the SQL query correct, relevant, and efficient?
+   - Does the query avoid harmful commands? If not, provide a safer alternative.
+
+3. Generate your output:
+   - If corrections are needed, provide the revised query and describe the reasons for the changes.
+
+Example final answer
+SQL
+```sql
+SELECT `Song_Name`, `Song_release_year` FROM singer WHERE Age = (SELECT MIN(Age) FROM singer)
+```
+
+=========
+
+【Database schema】
+{desc_str}
+【Foreign keys】
+{fk_str}
+【Question】
+{query}
+ [Submitted SQL Query]
+```sql
+{pred_sql}
+```
+
+Now please write the corrected query.
+[Correct SQL Query]
+
+"""
+
+
+
+
+
+
+reviewer_template_old = """
 Given the following database schema, foreign keys, and question, review the submitted SQL query for correctness, efficiency. Provide the final query with ```sql [corrected_sql_query]```.
 Make sure the generated final sql query is syntactically correct and relevant to the query asked. You are free to modify the tables and columns as required.
 Only generate the final SQL query.
