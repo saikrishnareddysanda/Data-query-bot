@@ -108,10 +108,10 @@ if __name__ == "__main__":
     tables_path  = './spider/tables.json'
 
     # Set Hugging Face token
-    os.environ['HUGGINGFACE_HUB_TOKEN'] = "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"
+    os.environ['HUGGINGFACE_HUB_TOKEN'] = "YOUR_HF_TOKEN"
 
     # Log in to W&B (Weights & Biases)
-    wandb.login(key="ace9bb699f102bb3b987820204a69c01d30fcc76")
+    wandb.login(key="Your_WANDDB_Token")
 
     # Load and preprocess the Spider dataset
     spider_data = load_spider_dataset_with_keys(dataset_path, tables_path)
