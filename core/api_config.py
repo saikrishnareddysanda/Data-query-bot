@@ -16,4 +16,4 @@ from openai import OpenAI
 # MODEL_NAME = 'gpt-4' # 0613版本
 # MODEL_NAME = 'gpt-35-turbo-16k' # 0613版本
 
-MODEL_NAME = 'llama3.1'
+MODEL_NAME = 'llama3.1:8b'
